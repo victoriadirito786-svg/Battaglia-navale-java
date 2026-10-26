@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class BattleShip {
 
     // costanti sempre in upper case (Maiuscolo)
@@ -6,8 +8,14 @@ public class BattleShip {
     static final char SIMBOLO_MANCATO = 'O';
     static final char SIMBOLO_NAVE = 'N';
 
+
     // TODO: rendere 5 e 3 parametrici (o da configurazione o da terminale con lo Scanner)
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int colpi = 0; // Contatore che cresce solo con colpi validi
+        int colpite = 0; // Contatore di quante caselle sono state colpite, la nave è affondata se questo vale
+
         System.out.println("BattleShip v 0.1");
 
         char[][] campo = new char[5][5];
@@ -47,10 +55,27 @@ public class BattleShip {
         //stampaCampo(campo);
         //stampaCampo(navi);
 
+        // Continuo a giocare finchè non ho colpito la nave 3 volte o non ho superato i 15 colpi
+        while (colpite < 3 && colpi < COLPI_MAX) {
+            // Chiedo le coordinate di attacco
+            // TODO: Validare il numero anche se metto una stringa (es: "Ciao")
+            System.out.println("inserisci riga (0-4):");
+            int riga = scanner.nextInt();
+            System.out.println("inserisci colonna (0-4):");
+            int colonna = scanner.nextInt();
+
+            // Valido la coordinata
+            if (!coordinataValida(campo, riga, colonna))
+                continue;
+
+            // Applico il colpo
+        }
+
+
+        scanner.close();
     }
 
     private static void stampaCampo(char[][] campo) {
-        System.out.println("***** CAMPO DA GIOCO *****");
 
         //TODO: Riconvertire con un for-each
         // r sta per riga, c sta per colonna (andava bene anche "i" e "j"
@@ -65,4 +90,26 @@ public class BattleShip {
         }
         System.out.println();
     }
+
+    // metodo "ausiliario" o di "appoggio" che ha il compito di verificare la coordinata
+    private static boolean coordinataValida(char[][] campo, int riga, int colonna) {
+        // Valido la coordinata
+        if (riga < 0 || >= 5 || colonna < 0 || colonna >= 5) {
+            System.out.println("Cordinate fuori dalla plancia di gioco, riprova");
+            System.out.println();
+
+            return false;
+        }
+
+        // Se giocatore spara due volte nello stesso punto? Non lo considero valido
+        if (campo[riga][colonna] != SIMBOLO_ACQUA) {
+            System.out.println("Hai già sparato qui, riprova");
+            System.out.println();
+
+            return false;
+        }
+
+        return true;
+    }
+}
 }
